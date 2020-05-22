@@ -45,12 +45,12 @@ public class UserUtil {
     public static void login(Context context) {
         Response.Listener<String> listener = response -> {
             //Log.i("test", "login response:" + response);
-            Toast.makeText(context, "登录成功", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
         };
         Response.ErrorListener errorListener = error -> {
             //Log.e("test", "login response error:" + error.getMessage());
             error.printStackTrace();
-            Toast.makeText(context, "登录失败", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
         };
         String url = signedUrl(URL_LOGIN);
         NetUtil.post(context, url, listener, errorListener);

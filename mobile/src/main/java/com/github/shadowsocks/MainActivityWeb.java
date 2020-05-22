@@ -10,6 +10,9 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,6 +27,7 @@ import com.github.shadowsocks.aidl.IShadowsocksService;
 import com.github.shadowsocks.aidl.ShadowsocksConnection;
 import com.github.shadowsocks.aidl.TrafficStats;
 import com.github.shadowsocks.bean.NodeBean;
+import com.github.shadowsocks.bean.NodeBeanInstanceCreator;
 import com.github.shadowsocks.bg.BaseService;
 import com.github.shadowsocks.database.Profile;
 import com.github.shadowsocks.database.ProfileManager;
@@ -36,6 +40,7 @@ import com.github.shadowsocks.util.UserUtil;
 import com.github.shadowsocks.utils.DirectBoot;
 import com.github.shadowsocks.utils.Key;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -118,13 +123,18 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
             UserUtil.connect(this, mNodeBean.getSERVERID(), success -> {
 //                Log.e("test", "上报连接结果 result:" + success);
             });
-//            SPUtil.put(this, "serviceId", String.valueOf(mNodeBean.getSERVERID()));
+            SPUtil.put(this, "serviceId", String.valueOf(mNodeBean.getSERVERID()));
+            loadStartPage();
         } else if (state == BaseService.State.Stopped) {
             String serviceId = SPUtil.get(this, "serviceId");
 //            Log.e("test", "上报断开" + serviceId);
-            UserUtil.disconnect(this, Integer.valueOf(serviceId), success -> {
+            if (StringUtil.isBlank(serviceId)) {
+                serviceId = "1";
+            }
+            UserUtil.disconnect(this, Integer.parseInt(serviceId), success -> {
 //                Log.e("test", "上报断开结果 result:" + success);
             });
+//            loadStartPage();
         }
     }
 
@@ -189,7 +199,7 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
     public class JSBridge {
         @JavascriptInterface
         public void callLink(String encryptStr) {
-            //Log.i("test", "callLink encryptStr:" + encryptStr);
+//            Log.i("test", "callLink encryptStr:" + encryptStr);
 
             if (StringUtil.isBlank(encryptStr)) {
                 //Log.e("test", "callLink encryptStr is blank");
@@ -212,8 +222,14 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
             profile.serialize();
 
             try {
-                mNodeBean = new Gson().fromJson(json, NodeBean.class);
-                //Log.i("test", mNodeBean.toString());
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.registerTypeAdapter(
+                        NodeBean.class,
+                        new NodeBeanInstanceCreator(getApplicationContext())
+                );
+                Gson customGson = gsonBuilder.create();
+
+                mNodeBean = customGson.fromJson(json, NodeBean.class);
                 if (mNodeBean.isInvalid()) {
                     Toast.makeText(MainActivityWeb.this, "返回节点信息错误2", Toast.LENGTH_LONG).show();
                     return;
@@ -223,15 +239,19 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
                 profile.setHost(mNodeBean.getIP());
                 profile.setRemotePort(Integer.parseInt(mNodeBean.getPORT()));
                 profile.setPassword(mNodeBean.getPWD());
-                profile.setMethod(mNodeBean.getEMETHOD());
                 profile.setMethod(mNodeBean.getPROTOCOL());
 //                profile.setRoute("bypass-lan-china");
                 profile.setRoute("gfwlist");
             } catch (Exception e) {
                 Toast.makeText(MainActivityWeb.this, "返回节点信息错误1", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
                 return;
             }
 
+            connect(profile);
+        }
+
+        private void createProfile(Profile profile) {
             try {
                 //Log.e("test", "callLink profild id:" + profile.getId());
                 if (Core.INSTANCE.getActiveProfileIds().size() > 0
@@ -248,16 +268,25 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
                 Toast.makeText(MainActivityWeb.this, "创建节点失败", Toast.LENGTH_LONG).show();
                 return;
             }
-
-            connect();
         }
 
-        public void connect() {
+        public void connect(Profile profile) {
             //Log.e("test", "connect profile id:" + DataStore.INSTANCE.getProfileId());
             // 2 连接
             if (state.getCanStop()) {
-                showDisconnectDialog();
+//                showDisconnectDialog();
+                Core.INSTANCE.stopService();
+                try {
+                    ProfileManager.INSTANCE.clear();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(MainActivityWeb.this, "重新连接中", Toast.LENGTH_SHORT).show();
+                handler.postDelayed(() -> {
+                    connect(profile);
+                }, 1500);
             } else if (DataStore.INSTANCE.getServiceMode().equals(Key.modeVpn)) {
+                createProfile(profile);
                 Intent intent = VpnService.prepare(MainActivityWeb.this);
                 if (intent != null) {
                     startActivityForResult(intent, REQUEST_CONNECT);
@@ -267,6 +296,8 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
                     //Log.e("test", "onActivityResult");
                 }
             } else {
+                Toast.makeText(MainActivityWeb.this, "连接中", Toast.LENGTH_SHORT).show();
+                createProfile(profile);
                 Core.INSTANCE.startService();
                 //Log.e("test", "startService");
             }
@@ -300,29 +331,6 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
             //Log.e("test", "activityweb makeText");
             Toast.makeText(this, R.string.vpn_permission_denied, Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void showDisconnectDialog() {
-        final AlertDialog.Builder normalDialog =
-                new AlertDialog.Builder(MainActivityWeb.this);
-        normalDialog.setTitle("温馨提醒");
-        normalDialog.setMessage("当前正在连接中，是否断开?");
-        normalDialog.setPositiveButton("立即断开",
-                (dialog, which) -> {
-                    Core.INSTANCE.stopService();
-                    try {
-                        ProfileManager.INSTANCE.clear();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    //Log.e("test", "showDisconnectDialog disconnect click");
-                });
-        normalDialog.setNegativeButton("不断开",
-                (dialog, which) -> {
-                    //Log.e("test", "showDisconnectDialog cancel click");
-                });
-        // 显示
-        normalDialog.show();
     }
 
     public static class Client extends WebViewClient {

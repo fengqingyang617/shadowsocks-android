@@ -1,5 +1,7 @@
 package com.github.shadowsocks.bean;
 
+import android.content.Context;
+
 import com.github.shadowsocks.util.AESUtil;
 import com.github.shadowsocks.util.StringUtil;
 
@@ -14,6 +16,10 @@ public class NodeBean {
     private String PROTOCOL;
     private String EMETHOD;
     private String OBFS;
+
+    public NodeBean(Context context) {
+    }
+
 
     public int getSERVERID() {
         return SERVERID;
