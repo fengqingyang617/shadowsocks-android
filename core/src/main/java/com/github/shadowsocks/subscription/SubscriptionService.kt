@@ -35,7 +35,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.Crashlytics
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.Core.app
 import com.github.shadowsocks.core.R

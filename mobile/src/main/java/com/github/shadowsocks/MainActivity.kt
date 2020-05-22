@@ -40,12 +40,13 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.updateLayoutParams
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceDataStore
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.Crashlytics
 import com.github.shadowsocks.acl.CustomRulesFragment
 import com.github.shadowsocks.aidl.IShadowsocksService
 import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.bg.BaseService
+import com.github.shadowsocks.database.ProfileManager
 import com.github.shadowsocks.preference.DataStore
 import com.github.shadowsocks.preference.OnPreferenceDataStoreChangeListener
 import com.github.shadowsocks.subscription.SubscriptionFragment
@@ -88,6 +89,7 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
             }.build())
         }.build()
     }
+
     fun launchUrl(uri: String) = try {
         customTabsIntent.launchUrl(this, uri.toUri())
     } catch (_: ActivityNotFoundException) {
@@ -96,9 +98,17 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
 
     // service
     var state = BaseService.State.Idle
-    override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) =
-            changeState(state, msg, true)
+
+    override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
+//        //Log.e("test", "stateChanged state:" + state.name + " profileName:" + profileName  +" msg:" + msg);
+        changeState(state, msg, true)
+    }
+
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
+
+//        //Log.e("test", "trafficUpdated id:$profileId")
+
+
         if (profileId == 0L) this@MainActivity.stats.updateTraffic(
                 stats.txRate, stats.rxRate, stats.txTotal, stats.rxTotal)
         if (state != BaseService.State.Stopping) {
@@ -106,11 +116,13 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
                     ?.onTrafficUpdated(profileId, stats)
         }
     }
+
     override fun trafficPersisted(profileId: Long) {
         ProfilesFragment.instance?.onTrafficPersisted(profileId)
     }
 
     private fun changeState(state: BaseService.State, msg: String? = null, animate: Boolean = false) {
+//        //Log.e("test", "changeState:" + state.name + " msg:" + msg);
         fab.changeState(state, this.state, animate)
         stats.changeState(state)
         if (msg != null) snackbar(getString(R.string.vpn_error, msg)).show()
@@ -120,23 +132,41 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
     }
 
     private fun toggle() = when {
-        state.canStop -> Core.stopService()
+        state.canStop -> {
+            Core.stopService()
+//            //Log.e("test", "canStop");
+        }
         DataStore.serviceMode == Key.modeVpn -> {
             val intent = VpnService.prepare(this)
-            if (intent != null) startActivityForResult(intent, REQUEST_CONNECT)
-            else onActivityResult(REQUEST_CONNECT, Activity.RESULT_OK, null)
+            if (intent != null) {
+                startActivityForResult(intent, REQUEST_CONNECT)
+//                //Log.e("test", "startActivityForResult")
+            } else {
+                onActivityResult(REQUEST_CONNECT, Activity.RESULT_OK, null)
+//                //Log.e("test", "onActivityResult")
+            }
         }
-        else -> Core.startService()
+        else -> {
+            Core.startService()
+//            //Log.e("test", "startService")
+        }
     }
 
     private val handler = Handler()
     private val connection = ShadowsocksConnection(handler, true)
-    override fun onServiceConnected(service: IShadowsocksService) = changeState(try {
-        BaseService.State.values()[service.state]
-    } catch (_: RemoteException) {
-        BaseService.State.Idle
-    })
-    override fun onServiceDisconnected() = changeState(BaseService.State.Idle)
+    override fun onServiceConnected(service: IShadowsocksService) {
+//        //Log.e("test", "onServiceConnected state:" + BaseService.State.values()[service.state].name)
+        changeState(try {
+            BaseService.State.values()[service.state]
+        } catch (_: RemoteException) {
+            BaseService.State.Idle
+        })
+    }
+
+    override fun onServiceDisconnected() {
+//        //Log.e("test", "onServiceDisconnected")
+        changeState(BaseService.State.Idle)
+    }
     override fun onBinderDied() {
         connection.disconnect(this)
         connection.connect(this, this)
@@ -148,7 +178,7 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
             resultCode == Activity.RESULT_OK -> Core.startService()
             else -> {
                 snackbar().setText(R.string.vpn_permission_denied).show()
-                Crashlytics.log(Log.ERROR, TAG, "Failed to start VpnService from onActivityResult: $data")
+//                Crashlytics.log(Log.ERROR, TAG, "Failed to start VpnService from onActivityResult: $data")
             }
         }
     }
@@ -183,6 +213,13 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
         changeState(BaseService.State.Idle) // reset everything to init state
         connection.connect(this, this)
         DataStore.publicStore.registerChangeListener(this)
+        //Log.e("test", "DataStore.serviceMode:" + DataStore.serviceMode)
+        //Log.e("test", "DataStore.profileId:" + DataStore.profileId)
+
+        var p =ProfileManager.getProfile(DataStore.profileId);
+
+        Log.e("test", "profile:" + p + " individual:" + p?.individual + " bypass:" + p?.bypass)
+
     }
 
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
@@ -230,10 +267,14 @@ class MainActivity : AppCompatActivity(), ShadowsocksConnection.Callback, OnPref
     }
 
     override fun onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawers() else {
+        //Log.e("test", "onBackPressed()")
+        if (drawer.isDrawerOpen(GravityCompat.START)) drawer.closeDrawers()
+        else {
             val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_holder) as ToolbarFragment
             if (!currentFragment.onBackPressed()) {
-                if (currentFragment is ProfilesFragment) super.onBackPressed() else {
+                if (currentFragment is ProfilesFragment)
+                    super.onBackPressed()
+                else {
                     navigation.menu.findItem(R.id.profiles).isChecked = true
                     displayFragment(ProfilesFragment())
                 }

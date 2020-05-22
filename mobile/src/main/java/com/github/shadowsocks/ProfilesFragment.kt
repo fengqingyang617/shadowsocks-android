@@ -44,7 +44,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.Crashlytics
 import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.database.Profile
@@ -148,7 +148,7 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
                 })
             }
         } catch (e: WriterException) {
-            Crashlytics.logException(e)
+//            Crashlytics.logException(e)
             (activity as MainActivity).snackbar().setText(e.readableMessage).show()
             dismiss()
             null

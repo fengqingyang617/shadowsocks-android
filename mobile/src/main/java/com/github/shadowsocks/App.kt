@@ -23,11 +23,13 @@ package com.github.shadowsocks
 import android.app.Application
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
+import com.github.shadowsocks.util.UserUtil
 
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        Core.init(this, MainActivity::class)
+        UserUtil.initUser(this);
+        Core.init(this, MainActivityWeb::class)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 

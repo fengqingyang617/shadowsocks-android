@@ -30,6 +30,7 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.system.ErrnoException
 import android.system.OsConstants
+import android.util.Log
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.VpnRequestActivity
 import com.github.shadowsocks.acl.Acl
@@ -133,9 +134,15 @@ class VpnService : BaseVpnService(), LocalDnsService.Interface {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (DataStore.serviceMode == Key.modeVpn) {
             if (prepare(this) != null) {
+                //Log.e("test", "vpnService onStartCommand1")
                 startActivity(Intent(this, VpnRequestActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            } else return super<LocalDnsService.Interface>.onStartCommand(intent, flags, startId)
+            } else {
+                //Log.e("test", "vpnService onStartCommand3")
+                return super<LocalDnsService.Interface>.onStartCommand(intent, flags, startId)
+            }
         }
+
+        //Log.e("test", "vpnService onStartCommand2")
         stopRunner()
         return Service.START_NOT_STICKY
     }

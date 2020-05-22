@@ -29,13 +29,14 @@ import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.UserManager
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.Crashlytics
 import com.github.shadowsocks.acl.Acl
 import com.github.shadowsocks.aidl.ShadowsocksConnection
 import com.github.shadowsocks.core.R
@@ -47,7 +48,7 @@ import com.github.shadowsocks.subscription.SubscriptionService
 import com.github.shadowsocks.utils.*
 import com.google.firebase.FirebaseApp
 import com.google.firebase.analytics.FirebaseAnalytics
-import io.fabric.sdk.android.Fabric
+//import io.fabric.sdk.android.Fabric
 import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import kotlinx.coroutines.GlobalScope
@@ -77,7 +78,13 @@ object Core {
         if (it == null) emptyList() else listOfNotNull(it.id, it.udpFallback)
     }
     val currentProfile: Pair<Profile, Profile?>? get() {
-        if (DataStore.directBootAware) DirectBoot.getDeviceProfile()?.apply { return this }
+        if (DataStore.directBootAware) {
+            //Log.e("test", "getDeviceProfile")
+            DirectBoot.getDeviceProfile()?.apply { return this }
+        }
+
+        //Log.e("test", "ProfileManager.expand id:" + DataStore.profileId)
+
         return ProfileManager.expand(ProfileManager.getProfile(DataStore.profileId) ?: return null)
     }
 
@@ -105,7 +112,7 @@ object Core {
 
         // overhead of debug mode is minimal: https://github.com/Kotlin/kotlinx.coroutines/blob/f528898/docs/debugging.md#debug-mode
         System.setProperty(DEBUG_PROPERTY_NAME, DEBUG_PROPERTY_VALUE_ON)
-        Fabric.with(deviceStorage, Crashlytics())   // multiple processes needs manual set-up
+//        Fabric.with(deviceStorage, Crashlytics())   // multiple processes needs manual set-up
         FirebaseApp.initializeApp(deviceStorage)
         WorkManager.initialize(deviceStorage, Configuration.Builder().apply {
             setExecutor { GlobalScope.launch { it.run() } }
@@ -151,5 +158,8 @@ object Core {
 
     fun startService() = ContextCompat.startForegroundService(app, Intent(app, ShadowsocksConnection.serviceClass))
     fun reloadService() = app.sendBroadcast(Intent(Action.RELOAD).setPackage(app.packageName))
-    fun stopService() = app.sendBroadcast(Intent(Action.CLOSE).setPackage(app.packageName))
+    fun stopService() {
+        //Log.e("test", "core stopservice")
+        app.sendBroadcast(Intent(Action.CLOSE).setPackage(app.packageName))
+    }
 }

@@ -35,7 +35,8 @@ import androidx.fragment.app.viewModels
 import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
 import androidx.lifecycle.observe
 import androidx.preference.*
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.BuildConfig
+//import com.crashlytics.android.Crashlytics
 import com.github.shadowsocks.BootReceiver
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.aidl.IShadowsocksService
@@ -293,7 +294,7 @@ class MainPreferenceFragment : LeanbackPreferenceFragmentCompat(), ShadowsocksCo
         when (requestCode) {
             REQUEST_CONNECT -> if (resultCode == Activity.RESULT_OK) Core.startService() else {
                 Toast.makeText(requireContext(), R.string.vpn_permission_denied, Toast.LENGTH_SHORT).show()
-                Crashlytics.log(Log.ERROR, TAG, "Failed to start VpnService from onActivityResult: $data")
+//                Crashlytics.log(Log.ERROR, TAG, "Failed to start VpnService from onActivityResult: $data")
             }
             REQUEST_REPLACE_PROFILES -> {
                 if (resultCode != Activity.RESULT_OK) return

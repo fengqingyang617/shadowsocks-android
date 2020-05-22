@@ -28,7 +28,7 @@ import android.os.*
 import android.util.Log
 import androidx.core.content.getSystemService
 import androidx.core.os.bundleOf
-import com.crashlytics.android.Crashlytics
+//import com.crashlytics.android.Crashlytics
 import com.github.shadowsocks.BootReceiver
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.Core.app
@@ -80,7 +80,10 @@ object BaseService {
             when (intent.action) {
                 Intent.ACTION_SHUTDOWN -> service.persistStats()
                 Action.RELOAD -> service.forceLoad()
-                else -> service.stopRunner()
+                else -> {
+                    //Log.e("test", "baseservice closereceiver action:" + intent.action)
+                    service.stopRunner()
+                }
             }
         }
         var closeReceiverRegistered = false
@@ -217,6 +220,7 @@ object BaseService {
         fun onBind(intent: Intent): IBinder? = if (intent.action == Action.SERVICE) data.binder else null
 
         fun forceLoad() {
+            //Log.e("test", "forceLoad");
             val (profile, fallback) = Core.currentProfile
                     ?: return stopRunner(false, (this as Context).getString(R.string.profile_empty))
             if (profile.host.isEmpty() || profile.password.isEmpty() ||
@@ -228,7 +232,8 @@ object BaseService {
             when {
                 s == State.Stopped -> startRunner()
                 s.canStop -> stopRunner(true)
-                else -> Crashlytics.log(Log.WARN, tag, "Illegal state when invoking use: $s")
+                else -> {}
+//                    Crashlytics.log(Log.WARN, tag, "Illegal state when invoking use: $s")
             }
         }
 
@@ -263,6 +268,8 @@ object BaseService {
         }
 
         fun stopRunner(restart: Boolean = false, msg: String? = null) {
+            //Log.e("test", "stopRunner msg:$msg");
+//            Log.d("test", Log.getStackTraceString(Throwable()));
             if (data.state == State.Stopping) return
             // channge the state
             data.changeState(State.Stopping)
@@ -319,6 +326,7 @@ object BaseService {
             if (profilePair == null) {
                 // gracefully shutdown: https://stackoverflow.com/q/47337857/2245107
                 data.notification = createNotification("")
+                //Log.e("test", "baseservice onStartCommand profilePare is null");
                 stopRunner(false, getString(R.string.profile_empty))
                 return Service.START_NOT_STICKY
             }

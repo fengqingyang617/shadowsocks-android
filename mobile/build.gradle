@@ -5,7 +5,7 @@ import java.util.regex.Pattern
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
@@ -73,6 +73,8 @@ dependencies {
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:1.0.4'
     implementation 'me.zhanghai.android.fastscroll:library:1.1.0'
     implementation 'xyz.belvi.mobilevision:barcodescanner:2.0.3'
+    implementation 'com.snail:antifake:1.4'
+    implementation 'com.android.volley:volley:1.1.1'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test:runner:$androidTestVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidEspressoVersion"

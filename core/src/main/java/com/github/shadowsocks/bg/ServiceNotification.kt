@@ -29,6 +29,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.PowerManager
 import android.text.format.Formatter
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
@@ -74,7 +75,8 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
             .setWhen(0)
             .setColor(ContextCompat.getColor(service, R.color.material_primary_500))
             .setTicker(service.getString(R.string.forward_success))
-            .setContentTitle(profileName)
+//            .setContentTitle(profileName)
+            .setContentTitle("vpn运行中")
             .setContentIntent(Core.configureIntent(service))
             .setSmallIcon(R.drawable.ic_service_active)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -112,11 +114,15 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
         }
     }
 
-    private fun show() = (service as Service).startForeground(1, builder.build())
+    private fun show() {
+        //Log.e("test", "show notification")
+        (service as Service).startForeground(1, builder.build())
+    }
 
     fun destroy() {
         (service as Service).unregisterReceiver(this)
         updateCallback(false)
+        //Log.e("test", "show destroy");
         service.stopForeground(true)
     }
 }
