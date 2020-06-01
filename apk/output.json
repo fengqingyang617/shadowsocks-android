@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.github.shadowsocks",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "properties": [],
+      "versionCode": 5000652,
+      "versionName": "5000652",
+      "enabled": true,
+      "outputFile": "mobile-arm64-v8a-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [],
+      "properties": [],
+      "versionCode": 5000650,
+      "versionName": "5000650",
+      "enabled": true,
+      "outputFile": "mobile-universal-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "properties": [],
+      "versionCode": 5000653,
+      "versionName": "5000653",
+      "enabled": true,
+      "outputFile": "mobile-x86-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "properties": [],
+      "versionCode": 5000651,
+      "versionName": "5000651",
+      "enabled": true,
+      "outputFile": "mobile-armeabi-v7a-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "properties": [],
+      "versionCode": 5000654,
+      "versionName": "5000654",
+      "enabled": true,
+      "outputFile": "mobile-x86_64-release.apk"
+    }
+  ]
+}

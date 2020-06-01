@@ -95,12 +95,19 @@ public class UserUtil {
         //Log.e("test", "signedUrl param url:" + url);
         int num = getRandom();
         String encryptUid = AESUtil.encrypt(userId, AESUtil.AES_KEY);
-        encryptUid = encryptUid.replace("+", "||");
+        encryptUid = urlReplace(encryptUid);
         String signed = HMACUtil.calculateHMAC(encryptUid, hmacKey);
-        signed = signed.replace("+", "||");
+        signed = urlReplace(signed);
         url += "userin=" + num + "&userid=" + encryptUid + "&signed=" + signed;
 
         //Log.e("test", "signedUrl url:" + url);
         return url;
+    }
+
+    public static String urlReplace(String raw) {
+        raw = raw.replace("+", "||");
+        raw = raw.replace("/", "--");
+        raw = raw.replace("=", "**");
+        return raw;
     }
 }
