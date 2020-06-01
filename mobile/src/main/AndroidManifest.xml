@@ -3,11 +3,7 @@
           package="com.github.shadowsocks"
           tools:ignore="MissingLeanbackSupport">
 
-    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.touchscreen"
-                  android:required="false"/>
-    <uses-feature android:name="android.hardware.camera"
                   android:required="false"/>
 
     <application
@@ -66,11 +62,11 @@
             android:theme="@style/Theme.Shadowsocks.Immersive"
             android:excludeFromRecents="true"/>
 
-        <activity
-            android:name=".ScannerActivity"
-            android:label="@string/add_profile_methods_scan_qr_code"
-            android:parentActivityName=".MainActivity"
-            android:excludeFromRecents="true"/>
+<!--        <activity-->
+<!--            android:name=".ScannerActivity"-->
+<!--            android:label="@string/add_profile_methods_scan_qr_code"-->
+<!--            android:parentActivityName=".MainActivity"-->
+<!--            android:excludeFromRecents="true"/>-->
 
         <activity android:name=".tasker.ConfigActivity"
                   android:theme="@style/Theme.Shadowsocks.Immersive">
@@ -95,7 +91,7 @@
                  android:label="@string/quick_toggle"
                  android:process=":bg"
                  android:directBootAware="true"
-                 android:icon="@drawable/ic_service_active"
+                 android:icon="@drawable/ic_launcher_small"
                  android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
                  tools:targetApi="n">
             <intent-filter>

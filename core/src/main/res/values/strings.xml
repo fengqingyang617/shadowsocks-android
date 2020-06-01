@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">Shadowsocks</string>
+  <string name="app_name">happyVPN</string>
   <string name="quick_toggle">Toggle</string>
   <string name="send_email">Send email</string>
 
@@ -53,7 +53,7 @@
   <string name="bypass_apps">Bypass</string>
   <string name="bypass_apps_summary">Enable this option to bypass selected apps</string>
   <string name="auto_connect">Auto Connect</string>
-  <string name="auto_connect_summary">Enable Shadowsocks on startup/app update if it was running before</string>
+  <string name="auto_connect_summary">Enable happyVPN on startup/app update if it was running before</string>
   <string name="direct_boot_aware">Allow Toggling in Lock Screen</string>
   <string name="direct_boot_aware_summary">Your selected profile information will be less protected</string>
   <string name="tcp_fastopen_summary">Toggling might require ROOT permission</string>
@@ -71,7 +71,7 @@
   <string name="service_vpn">VPN Service</string>
   <string name="service_proxy">Proxy Service</string>
   <string name="service_transproxy">Transproxy Service</string>
-  <string name="forward_success">Shadowsocks started.</string>
+  <string name="forward_success">happyVPN started.</string>
   <string name="invalid_server">Invalid server name</string>
   <string name="service_failed">Failed to connect the remote server</string>
   <string name="stop">Stop</string>
@@ -92,7 +92,7 @@
   <string name="faq">FAQ</string>
   <string name="faq_url">https://github.com/shadowsocks/shadowsocks-android/blob/master/.github/faq.md</string>
   <string name="about">About</string>
-  <string name="about_title">Shadowsocks %s</string>
+  <string name="about_title">happyVPN %s</string>
   <string name="edit">Edit</string>
   <string name="share">Share</string>
   <string name="add_profile">Add Profile</string>

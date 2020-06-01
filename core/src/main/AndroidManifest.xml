@@ -32,7 +32,7 @@
         android:banner="@mipmap/banner">
 
         <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing"
-                   android:value="true" />
+                   android:value="false" />
         <meta-data android:name="com.google.android.backup.api_key"
                    android:value="AEdPqrEAAAAI_zVxZthz2HDuz9toTvkYvL0L5GA-OjeUIfBeXg"/>
 

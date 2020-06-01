@@ -76,7 +76,7 @@
     <string name="settings">"设置选项"</string>
     <string name="faq">"常见问题"</string>
     <string name="about">"关于"</string>
-    <string name="about_title">"影梭 (Shadowsocks) %s"</string>
+    <string name="about_title">"影梭 (happyVPN) %s"</string>
     <string name="edit">"编辑"</string>
     <string name="share">"分享"</string>
     <string name="add_profile">"添加配置文件"</string>
@@ -154,7 +154,7 @@
     <string name="service_proxy">"代理模式"</string>
     <string name="service_transproxy">"透明代理模式"</string>
     <string name="vpn_permission_denied">"创建 VPN 服务权限不足"</string>
-    <string name="auto_connect_summary_v24">"允许 Shadowsocks 随系统启动，建议使用始终开启的 VPN"</string>
+    <string name="auto_connect_summary_v24">"允许 happyVPN 随系统启动，建议使用始终开启的 VPN"</string>
     <string name="direct_boot_aware">"允许锁屏时切换"</string>
     <string name="direct_boot_aware_summary">"选中的配置信息会不那么安全"</string>
     <string name="acl_rule_online_config">"在线规则文件 URL"</string>

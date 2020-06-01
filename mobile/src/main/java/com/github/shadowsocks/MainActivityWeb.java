@@ -3,6 +3,7 @@ package com.github.shadowsocks;
 import android.app.Activity;
 import android.app.backup.BackupManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.Bundle;
@@ -316,6 +317,16 @@ public class MainActivityWeb extends AppCompatActivity implements ShadowsocksCon
                     e.printStackTrace();
                 }
             }
+        }
+
+        @JavascriptInterface
+        public void GoLink(String url) {
+//            Log.e("test", "GoLink");
+            Intent intent= new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            Uri content_url = Uri.parse(url);
+            intent.setData(content_url);
+            startActivity(intent);
         }
     }
 

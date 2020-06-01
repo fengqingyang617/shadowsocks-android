@@ -76,7 +76,7 @@ class ServiceNotification(private val service: BaseService.Interface, profileNam
             .setColor(ContextCompat.getColor(service, R.color.material_primary_500))
             .setTicker(service.getString(R.string.forward_success))
 //            .setContentTitle(profileName)
-            .setContentTitle("vpn运行中")
+            .setContentTitle("happVPN运行中")
             .setContentIntent(Core.configureIntent(service))
             .setSmallIcon(R.drawable.ic_service_active)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)

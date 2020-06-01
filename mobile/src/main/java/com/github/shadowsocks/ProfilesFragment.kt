@@ -507,7 +507,7 @@ class ProfilesFragment : ToolbarFragment(), Toolbar.OnMenuItemClickListener {
     override fun onMenuItemClick(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_scan_qr_code -> {
-                startActivity(Intent(context, ScannerActivity::class.java))
+//                startActivity(Intent(context, ScannerActivity::class.java))
                 true
             }
             R.id.action_import_clipboard -> {

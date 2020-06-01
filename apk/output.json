@@ -23,12 +23,17 @@
     },
     {
       "type": "ONE_OF_MANY",
-      "filters": [],
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
       "properties": [],
-      "versionCode": 5000650,
-      "versionName": "5000650",
+      "versionCode": 5000651,
+      "versionName": "5000651",
       "enabled": true,
-      "outputFile": "mobile-universal-release.apk"
+      "outputFile": "mobile-armeabi-v7a-release.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -46,17 +51,12 @@
     },
     {
       "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "armeabi-v7a"
-        }
-      ],
+      "filters": [],
       "properties": [],
-      "versionCode": 5000651,
-      "versionName": "5000651",
+      "versionCode": 5000650,
+      "versionName": "5000650",
       "enabled": true,
-      "outputFile": "mobile-armeabi-v7a-release.apk"
+      "outputFile": "mobile-universal-release.apk"
     },
     {
       "type": "ONE_OF_MANY",
